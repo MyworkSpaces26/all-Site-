@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo Landing Page</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #1a1a2e;
+    --accent: #e94560;
+    --bg: #f9f6f1;
+    --text: #1a1a2e;
+    --card: #ffffff;
+    --muted: #6b7280;
+    --radius: 16px;
+    --transition: 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    transition: background var(--transition), color var(--transition);
+  }
+
+  /* ── CATEGORY SWITCHER ── */
+  .switcher-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .switcher-bar::-webkit-scrollbar { display: none; }
+
+  .switcher-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #888;
+    white-space: nowrap;
+    padding-right: 6px;
+    border-right: 1px solid #ddd;
+    margin-right: 4px;
+  }
+
+  .cat-btn {
+    flex-shrink: 0;
+    border: 1.5px solid #e0e0e0;
+    background: white;
+    border-radius: 40px;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s;
+    white-space: nowrap;
+  }
+  .cat-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+  .cat-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  /* ── MAIN CONTENT ── */
+  .page { padding-top: 60px; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 92vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 40px;
+    padding: 80px 6% 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    right: -10%;
+    top: -20%;
+    width: 70%;
+    height: 140%;
+    background: var(--accent);
+    opacity: 0.06;
+    border-radius: 60% 0 0 60%;
+    transition: background var(--transition);
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 40px;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.1s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 4.5vw, 4.2rem);
+    line-height: 1.12;
+    font-weight: 900;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.2s forwards;
+  }
+  .hero-title span { color: var(--accent); }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 480px;
+    margin-bottom: 36px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.3s forwards;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.4s forwards;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,0.2); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 2px solid var(--text);
+    padding: 14px 28px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-secondary:hover { background: var(--text); color: white; }
+
+  .hero-stats {
+    display: flex;
+    gap: 30px;
+    margin-top: 44px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.5s forwards;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label { font-size: 11px; color: var(--muted); font-weight: 500; margin-top: 2px; }
+
+  .hero-visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    animation: fadeLeft 0.7s 0.3s forwards;
+  }
+
+  .hero-card-main {
+    background: white;
+    border-radius: 24px;
+    padding: 36px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.12);
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .visual-icon {
+    font-size: 80px;
+    display: block;
+    text-align: center;
+    margin-bottom: 16px;
+    line-height: 1;
+  }
+
+  .visual-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .visual-address {
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .visual-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .vtag {
+    background: var(--bg);
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .rating-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #f59e0b;
+  }
+
+  .floating-badge {
+    position: absolute;
+    background: var(--accent);
+    color: white;
+    border-radius: 16px;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    animation: float 3s ease-in-out infinite;
+  }
+  .fb1 { top: -20px; right: -20px; }
+  .fb2 { bottom: -16px; left: -24px; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+  /* ── SECTION COMMON ── */
+  section { padding: 80px 6%; }
+  .section-header { text-align: center; margin-bottom: 52px; }
+  .section-tag {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 40px;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .section-sub { color: var(--muted); margin-top: 12px; font-size: 1rem; line-height: 1.7; max-width: 520px; margin-inline: auto; }
+
+  /* ── SERVICES ── */
+  .services { background: var(--bg); }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+  }
+  .service-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 32px 24px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    transition: all 0.3s;
+    border: 1px solid rgba(0,0,0,0.05);
+    cursor: pointer;
+  }
+  .service-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.12); }
+  .svc-icon { font-size: 40px; margin-bottom: 14px; display: block; }
+  .svc-name { font-weight: 700; font-size: 1rem; margin-bottom: 8px; }
+  .svc-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .svc-price {
+    margin-top: 16px;
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+
+  /* ── GALLERY ── */
+  .gallery { background: white; }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto;
+    gap: 16px;
+  }
+  .gallery-item {
+    background: var(--bg);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    font-size: 48px;
+    transition: transform 0.3s;
+    cursor: pointer;
+    border: 2px solid transparent;
+    min-height: 160px;
+  }
+  .gallery-item:hover { transform: scale(1.04); border-color: var(--accent); }
+  .gallery-item.big { grid-column: span 2; min-height: 200px; font-size: 64px; }
+  .gallery-caption { font-size: 12px; font-weight: 600; margin-top: 10px; color: var(--muted); }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials { background: var(--bg); }
+  .testi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .testi-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 30px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    position: relative;
+    border-left: 4px solid var(--accent);
+  }
+  .testi-quote { font-size: 48px; color: var(--accent); line-height: 0.8; margin-bottom: 10px; font-family: Georgia, serif; opacity: 0.3; }
+  .testi-text { font-size: 14px; line-height: 1.7; color: var(--text); margin-bottom: 20px; }
+  .testi-author { display: flex; align-items: center; gap: 12px; }
+  .testi-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; flex-shrink: 0; }
+  .testi-name { font-weight: 700; font-size: 14px; }
+  .testi-stars { color: #f59e0b; font-size: 13px; }
+
+  /* ── CONTACT ── */
+  .contact { background: var(--primary); color: white; }
+  .contact .section-title { color: white; }
+  .contact .section-sub { color: rgba(255,255,255,0.6); }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    margin-top: 48px;
+    align-items: start;
+  }
+  .contact-info { display: flex; flex-direction: column; gap: 24px; }
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 18px 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .contact-item-icon { font-size: 28px; flex-shrink: 0; }
+  .contact-item-label { font-size: 11px; color: rgba(255,255,255,0.5); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+  .contact-item-val { font-size: 15px; font-weight: 600; margin-top: 3px; }
+  .contact-form { background: rgba(255,255,255,0.05); border-radius: 20px; padding: 32px; border: 1px solid rgba(255,255,255,0.1); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.8px; }
+  .form-group input, .form-group textarea {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: white;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.3s;
+    outline: none;
+    resize: none;
+  }
+  .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
+  .form-group textarea { height: 90px; }
+  .form-submit {
+    width: 100%;
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .form-submit:hover { opacity: 0.9; transform: translateY(-2px); }
+
+  /* ── WHATSAPP FLOAT ── */
+  .wa-float {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: #25D366;
+    color: white;
+    border-radius: 50px;
+    padding: 14px 22px;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 8px 28px rgba(37,211,102,0.4);
+    cursor: pointer;
+    z-index: 999;
+    animation: pulse 2s infinite;
+    text-decoration: none;
+  }
+  @keyframes pulse {
+    0%,100%{box-shadow:0 8px 28px rgba(37,211,102,0.4)}
+    50%{box-shadow:0 8px 40px rgba(37,211,102,0.7)}
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #0d0d0d;
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    padding: 24px;
+    font-size: 13px;
+  }
+  footer span { color: var(--accent); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeLeft { from{opacity:0;transform:translateX(30px)} to{opacity:1;transform:translateX(0)} }
+
+  .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s, transform 0.6s; }
+  .fade-in.visible { opacity: 1; transform: none; }
+
+  /* ── NAV ── */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6%;
+    height: 70px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    position: sticky;
+    top: 52px;
+    z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-cta {
+    background: var(--accent);
+    color: white !important;
+    padding: 8px 20px !important;
+    border-radius: 40px;
+    font-weight: 700 !important;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; padding: 40px 5% 50px; text-align: center; }
+    .hero::before { display: none; }
+    .hero-sub { margin-inline: auto; }
+    .hero-btns { justify-content: center; }
+    .hero-stats { justify-content: center; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .gallery-grid { grid-template-columns: 1fr 1fr; }
+    .gallery-item.big { grid-column: span 2; }
+    .nav-links { display: none; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- CATEGORY SWITCHER -->
+<div class="switcher-bar">
+  <span class="switcher-label">📱 Demo</span>
+  <button class="cat-btn active" onclick="switchCategory('restaurant')">🍽️ Restaurant</button>
+  <button class="cat-btn" onclick="switchCategory('clothing')">👗 Cloth Store</button>
+  <button class="cat-btn" onclick="switchCategory('gym')">💪 Gym</button>
+  <button class="cat-btn" onclick="switchCategory('pharmacy')">💊 Pharmacy</button>
+  <button class="cat-btn" onclick="switchCategory('school')">🏫 School</button>
+  <button class="cat-btn" onclick="switchCategory('tuition')">📚 Tuition</button>
+  <button class="cat-btn" onclick="switchCategory('salon')">✂️ Salon</button>
+  <button class="cat-btn" onclick="switchCategory('hotel')">🏨 Hotel</button>
+  <button class="cat-btn" onclick="switchCategory('cafe')">☕ Café</button>
+  <button class="cat-btn" onclick="switchCategory('dental')">🦷 Dental</button>
+</div>
+
+<div class="page">
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" id="nav-logo">Spice<span>Garden</span></div>
+  <div class="nav-links">
+    <a href="#">Home</a>
+    <a href="#">About</a>
+    <a href="#">Services</a>
+    <a href="#">Gallery</a>
+    <a href="#" class="nav-cta">Contact Us</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge" id="hero-badge">⭐ #1 Rated in Your City</div>
+    <h1 class="hero-title" id="hero-title">Authentic <span>Indian</span> Cuisine You'll Love</h1>
+    <p class="hero-sub" id="hero-sub">Experience the rich flavors of home-cooked Indian meals. Fresh ingredients, traditional recipes, and a warm atmosphere for family dining.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" id="btn-primary">📞 Call Now</button>
+      <button class="btn-secondary" id="btn-secondary">View Menu</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num" id="stat1-num">500+</div>
+        <div class="stat-label" id="stat1-label">Happy Customers</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="stat2-num">50+</div>
+        <div class="stat-label" id="stat2-label">Dishes</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="stat3-num">10+</div>
+        <div class="stat-label" id="stat3-label">Years Open</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="hero-card-main">
+      <span class="visual-icon" id="visual-icon">🍛</span>
+      <div class="visual-title" id="visual-biz-name">Spice Garden Restaurant</div>
+      <div class="visual-address" id="visual-address">📍 MG Road, Bhubaneswar • Open 9AM–11PM</div>
+      <div class="visual-tags" id="visual-tags">
+        <span class="vtag">Dine-in</span>
+        <span class="vtag">Takeaway</span>
+        <span class="vtag">Home Delivery</span>
+      </div>
+      <div class="rating-row">⭐⭐⭐⭐⭐ <span style="color:#1a1a2e;font-size:13px;margin-left:4px;">4.9 (320 reviews)</span></div>
+    </div>
+    <div class="floating-badge fb1" id="fb1">🔥 Special Thali ₹199</div>
+    <div class="floating-badge fb2" id="fb2">✅ 10 Yrs of Trust</div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services">
+  <div class="section-header fade-in">
+    <span class="section-tag" id="svc-tag">Our Menu</span>
+    <h2 class="section-title" id="svc-title">What We Serve</h2>
+    <p class="section-sub" id="svc-sub">Fresh, delicious, and made with love — explore our most loved dishes and combos.</p>
+  </div>
+  <div class="services-grid" id="services-grid"></div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery">
+  <div class="section-header fade-in">
+    <span class="section-tag">Gallery</span>
+    <h2 class="section-title" id="gal-title">A Glimpse Inside</h2>
+    <p class="section-sub">See what makes us special — our place, our people, our passion.</p>
+  </div>
+  <div class="gallery-grid" id="gallery-grid"></div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="section-header fade-in">
+    <span class="section-tag">Reviews</span>
+    <h2 class="section-title">What People Say</h2>
+    <p class="section-sub">Real reviews from real customers who trust us every day.</p>
+  </div>
+  <div class="testi-grid" id="testi-grid"></div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact">
+  <div class="section-header">
+    <span class="section-tag">Contact</span>
+    <h2 class="section-title" id="contact-title">Visit Us or Get in Touch</h2>
+    <p class="section-sub" id="contact-sub">We're always happy to hear from you. Drop in or send us a message!</p>
+  </div>
+  <div class="contact-grid fade-in">
+    <div class="contact-info" id="contact-info"></div>
+    <div class="contact-form">
+      <div class="form-row">
+        <div class="form-group"><label>Your Name</label><input type="text" placeholder="Rahul Sharma"></div>
+        <div class="form-group"><label>Phone</label><input type="text" placeholder="+91 98765 43210"></div>
+      </div>
+      <div class="form-group" style="margin-bottom:14px"><label id="form-label3">Message / Order</label><textarea placeholder="Tell us what you need..."></textarea></div>
+      <button class="form-submit" id="form-submit">📩 Send Message</button>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<!-- WHATSAPP FLOAT -->
+<a class="wa-float" id="wa-float" href="#">💬 WhatsApp Us</a>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 <span id="footer-name">Spice Garden Restaurant</span> — All Rights Reserved | Built with ❤️ for local businesses</p>
+</footer>
+
+<script>
+const categories = {
+  restaurant: {
+    accent: '#e94560', primary: '#1a1a2e', bg: '#f9f6f1',
+    navLogo: 'Spice<span>Garden</span>',
+    badge: '⭐ #1 Rated Restaurant',
+    title: 'Authentic <span>Indian</span> Cuisine You\'ll Love',
+    sub: 'Experience the rich flavors of home-cooked Indian meals. Fresh ingredients, traditional recipes, and a warm atmosphere for family dining.',
+    btn1: '📞 Reserve Table', btn2: 'View Menu',
+    stats: [['500+','Happy Guests'],['50+','Dishes'],['10+','Yrs Open']],
+    icon: '🍛', bizName: 'Spice Garden Restaurant',
+    address: '📍 MG Road, Bhubaneswar • Open 9AM–11PM',
+    tags: ['Dine-in','Takeaway','Delivery'],
+    fb1: '🔥 Thali ₹199', fb2: '✅ 10 Yrs of Trust',
+    svcTag: 'Our Menu', svcTitle: 'What We Serve', svcSub: 'Fresh, delicious, and made with love.',
+    services: [
+      {icon:'🍛',name:'Dal Makhani',desc:'Rich, creamy lentil curry slow cooked overnight.',price:'₹180'},
+      {icon:'🍗',name:'Butter Chicken',desc:'Tender chicken in a velvety tomato-butter sauce.',price:'₹280'},
+      {icon:'🥘',name:'Paneer Tikka Masala',desc:'Grilled cottage cheese in spiced masala gravy.',price:'₹240'},
+      {icon:'🍜',name:'Biryani Platter',desc:'Aromatic basmati rice with your choice of veg/chicken.',price:'₹320'},
+      {icon:'🫓',name:'Tandoori Basket',desc:'Assorted tandoor breads fresh from the clay oven.',price:'₹120'},
+      {icon:'🍨',name:'Dessert Combo',desc:'Gulab Jamun, Kheer, and Halwa — sweet endings.',price:'₹150'},
+    ],
+    gallery: ['🍛','🔥','👨‍🍳','🎉','🍗','🥗'],
+    galBig: 0,
+    galCaptions: ['Signature Curry','Live Tandoor','Our Chef','Family Events','Grill Specials','Fresh Salads'],
+    testimonials: [
+      {text:'The Dal Makhani here is simply outstanding. We come every Sunday for family lunch and it never disappoints!', name:'Priya Nayak', avatar:'👩', stars:'⭐⭐⭐⭐⭐'},
+      {text:'Best biryani in Bhubaneswar! The aroma itself makes you hungry. Delivery was also super fast.', name:'Arjun Das', avatar:'👨', stars:'⭐⭐⭐⭐⭐'},
+      {text:'Celebrated my parents anniversary here. The staff was so warm and food was incredible. Highly recommended!', name:'Sneha Patel', avatar:'👧', stars:'⭐⭐⭐⭐⭐'},
+    ],
+    contactTitle: 'Reserve a Table or Order Now',
+    contactSub: 'Walk in or call ahead. We love serving you!',
+    contactInfo: [
+      {icon:'📞',label:'Phone',val:'+91 98765 43210'},
+      {icon:'📍',label:'Address',val:'12, MG Road, Bhubaneswar, Odisha'},
+      {icon:'🕐',label:'Hours',val:'Mon–Sun: 9:00 AM – 11:00 PM'},
+      {icon:'📧',label:'Email',val:'info@spicegarden.com'},
+    ],
+    formLabel3: 'Message / Reservation',
+    formSubmit: '🍽️ Reserve Now',
+    footerName: 'Spice Garden Restaurant',
+  },
+
+  clothing: {
+    accent: '#7c3aed', primary: '#1e1b2e', bg: '#faf8ff',
+    navLogo: 'Trend<span>Wear</span>',
+    badge: '👗 New Collection Arrived',
+    title: 'Fashion That <span>Defines</span> Your Style',
+    sub: 'Discover the latest trends in ethnic, western, and fusion wear. Premium fabric, best price, and free alteration on every purchase.',
+    btn1: '🛍️ Shop Now', btn2: 'View Collection',
+    stats: [['2000+','Products'],['5000+','Happy Buyers'],['8+','Yrs of Fashion']],
+    icon: '👗', bizName: 'TrendWear Boutique',
+    address: '📍 Unit-4, Bhubaneswar • Open 10AM–9PM',
+    tags: ['Ethnic Wear','Western','Kids Wear'],
+    fb1: '✨ Flat 30% Off', fb2: '🆓 Free Alteration',
+    svcTag: 'Collections', svcTitle: 'Shop By Category', svcSub: 'From bridal to casual — we have everything for every occasion.',
+    services: [
+      {icon:'👘',name:'Ethnic Wear',desc:'Sarees, lehengas, kurtas, and more. For every festival.',price:'₹499+'},
+      {icon:'👔',name:'Men\'s Formal',desc:'Shirts, trousers, blazers for office and events.',price:'₹699+'},
+      {icon:'👗',name:'Western Wear',desc:'Dresses, tops, jeans — latest styles every week.',price:'₹399+'},
+      {icon:'👶',name:'Kids Collection',desc:'Colorful, comfortable clothing for boys and girls.',price:'₹299+'},
+      {icon:'💍',name:'Bridal Special',desc:'Exclusive bridal and wedding collection.',price:'₹2999+'},
+      {icon:'🧥',name:'Winter Wear',desc:'Jackets, sweaters, shawls for every season.',price:'₹599+'},
+    ],
+    gallery: ['👗','👔','👘','💃','🧥','👟'],
+    galBig: 3,
+    galCaptions: ['Ladies Collection','Men\'s Section','Ethnic Wear','Festival Special','Winter Wear','Footwear'],
+    testimonials: [
+      {text:'Got my entire wedding shopping done here. Quality is amazing and prices are very reasonable. Loved it!', name:'Meena Tripathi', avatar:'👩', stars:'⭐⭐⭐⭐⭐'},
+      {text:'Best ethnic wear shop in the city. The staff helps you pick the right outfit. Great experience!', name:'Sunita Rao', avatar:'👩‍🦱', stars:'⭐⭐⭐⭐⭐'},
+      {text:'My go-to place for formal shirts. Always fresh stock and great fitting. Highly recommend TrendWear!', name:'Rohan Mishra', avatar:'👨', stars:'⭐⭐⭐⭐⭐'},
+    ],
+    contactTitle: 'Visit Our Store Today',
+    contactSub: 'Come in, try on, and take home your new look!',
+    contactInfo: [
+      {icon:'📞',label:'Phone',val:'+91 99887 65432'},
+      {icon:'📍',label:'Address',val:'Shop 8, Unit-4 Market, Bhubaneswar'},
+      {icon:'🕐',label:'Hours',val:'Mon–Sun: 10:00 AM – 9:00 PM'},
+      {icon:'📧',label:'Email',val:'trendwear@gmail.com'},
+    ],
+    formLabel3: 'Looking For / Special Request',
+    formSubmit: '🛍️ Enquire Now',
+    footerName: 'TrendWear Boutique',
+  },
+
+  gym: {
+    accent: '#f97316', primary: '#0f172a', bg: '#f8fafc',
+    navLogo: 'Iron<span>Force</span>',
+    badge: '💪 Transform Your Body',
+    title: 'Sweat. <span>Grind.</span> Achieve.',
+    sub: 'State-of-the-art equipment, certified trainers, and a community that keeps you going. Your fitness journey starts here.',
+    btn1: '🏋️ Join Now', btn2: 'View Plans',
+    stats: [['1200+','Members'],['15+','Expert Trainers'],['5+','Yrs Strong']],
+    icon: '💪', bizName: 'IronForce Fitness',
+    address: '📍 Saheed Nagar, Bhubaneswar • Open 5AM–10PM',
+    tags: ['Cardio','Weight Training','Yoga'],
+    fb1: '🔥 Free 7-Day Trial', fb2: '🏆 Best Gym 2024',
+    svcTag: 'Programs', svcTitle: 'Our Training Programs', svcSub: 'Expert-designed programs for every fitness level — beginner to advanced.',
+    services: [
+      {icon:'🏋️',name:'Weight Training',desc:'Full-equipped weight room with machines and free weights.',price:'₹799/mo'},
+      {icon:'🧘',name:'Yoga & Meditation',desc:'Daily yoga sessions for flexibility, stress relief, and wellness.',price:'₹599/mo'},
+      {icon:'🏃',name:'Cardio Zone',desc:'Treadmills, cycles, cross-trainers and more.',price:'₹699/mo'},
+      {icon:'🥊',name:'Boxing / MMA',desc:'High-energy combat fitness sessions with certified coach.',price:'₹999/mo'},
+      {icon:'🩺',name:'Diet Consultation',desc:'Personal diet plan by certified nutritionist.',price:'₹499/session'},
+      {icon:'⚡',name:'Personal Training',desc:'1-on-1 sessions tailored to your specific goals.',price:'₹1499/mo'},
+    ],
+    gallery: ['🏋️','🧘','🏃','💪','🥊','🩺'],
+    galBig: 1,
+    galCaptions: ['Weight Room','Yoga Studio','Cardio Area','Community','Boxing Ring','Nutrition'],
+    testimonials: [
+      {text:'Lost 12 kg in 3 months with their personal trainer. The diet plan + training combination is unbeatable!', name:'Kiran Mahapatra', avatar:'👨', stars:'⭐⭐⭐⭐⭐'},
+      {text:'Best gym in Bhubaneswar! Equipment is always maintained, trainers are very helpful and motivating.', name:'Ananya Singh', avatar:'👩', stars:'⭐⭐⭐⭐⭐'},
+      {text:'Joined for yoga and ended up doing weight training too! Great community and very clean facilities.', name:'Deepak Kumar', avatar:'👦', stars:'⭐⭐⭐⭐⭐'},
+    ],
+    contactTitle: 'Start Your Free Trial Today',
+    contactSub: 'First 7 days absolutely free. No commitment required.',
+    contactInfo: [
+      {icon:'📞',label:'Phone',val:'+91 97654 32109'},
+      {icon:'📍',label:'Address',val:'Plot 45, Saheed Nagar, Bhubaneswar'},
+      {icon:'🕐',label:'Hours',val:'Mon–Sat: 5AM–10PM | Sun: 6AM–8PM'},
+      {icon:'📧',label:'Email',val:'ironforce@gmail.com'},
+    ],
+    formLabel3: 'Fitness Goal / Query',
+    formSubmit: '🏋️ Start Free Trial',
+    footerName: 'IronForce Fitness',
+  },
+
+  pharmacy: {
+    accent: '#059669', primary: '#064e3b', bg: '#f0fdf4',
+    navLogo: 'Care<span>Plus</span>',
+    badge: '💊 Trusted Healthcare',
+    title: 'Your Health, <span>Our</span> Priority',
+    sub: 'Licensed pharmacists, genuine medicines, and free home delivery. Available 24/7 for all your healthcare needs.',
+    btn1: '📞 Order Medicines', btn2: 'Home Delivery',
+    stats: [['10000+','Medicines'],['24/7','Service'],['15+','Yrs Trusted']],
+    icon: '💊', bizName: 'CarePlus Pharmacy',
+    address: '📍 Kalpana Square, Bhubaneswar • Open 24/7',
+    tags: ['Medicines','Health Products','Home Delivery'],
+    fb1: '🚚 Free Delivery', fb2: '✅ 100% Genuine',
+    svcTag: 'Services', svcTitle: 'What We Offer', svcSub: 'Everything you need for your health — medicines, tests, and consultations.',
+    services: [
+      {icon:'💊',name:'Prescription Medicines',desc:'All branded and generic medicines available with valid prescription.',price:'MRP Price'},
+      {icon:'🩺',name:'Health Checkup',desc:'Blood pressure, sugar, oxygen level check — walk in anytime.',price:'₹50'},
+      {icon:'🧴',name:'Cosmetics & Care',desc:'Skincare, haircare, baby care and personal hygiene products.',price:'Various'},
+      {icon:'🚚',name:'Home Delivery',desc:'Free delivery within 5 km. Same day delivery on orders before 4 PM.',price:'FREE'},
+      {icon:'🩸',name:'Lab Tests',desc:'Blood tests, urine tests with home sample collection.',price:'₹199+'},
+      {icon:'🫀',name:'Health Supplements',desc:'Vitamins, protein, immunity boosters by trusted brands.',price:'₹299+'},
+    ],
+    gallery: ['💊','🩺','🧴','🚚','🏥','👨‍⚕️'],
+    galBig: 5,
+    galCaptions: ['Medicines','Health Check','Personal Care','Home Delivery','Our Store','Licensed Staff'],
+    testimonials: [
+      {text:'They deliver medicines within 1 hour. Even at night, their service is amazing. Very reliable pharmacy!', name:'Suresh Panda', avatar:'👨', stars:'⭐⭐⭐⭐⭐'},
+      {text:'All medicines are genuine and prices are fair. The pharmacist always explains the dosage properly.', name:'Lata Mohanty', avatar:'👩', stars:'⭐⭐⭐⭐⭐'},
+      {text:'Home collection for blood test is so convenient! Reports came in 6 hours. Highly recommend!', name:'Vikram Joshi', avatar:'👦', stars:'⭐⭐⭐⭐⭐'},
+    ],
+    contactTitle: 'Order Medicines or Ask a Question',
+    contactSub: 'Available 24/7 — WhatsApp us your prescription for instant delivery.',
+    contactInfo: [
+      {icon:'📞',label:'Phone',val:'+91 96543 21098'},
+      {icon:'📍',label:'Address',val:'Near Kalpana Square, Bhubaneswar'},
+      {icon:'🕐',label:'Hours',val:'Open 24 Hours, 7 Days a Week'},
+      {icon:'📧',label:'Email',val:'careplus@gmail.com'},
+    ],
+    formLabel3: 'Medicine Name / Query',
+    formSubmit: '💊 Send Prescription',
+    footerName: 'CarePlus Pharmacy',
+  },
+
+  school: {
+    accent: '#2563eb', primary: '#1e3a5f', bg: '#f0f6ff',
+    navLogo: 'Bright<span>Minds</span>',
+    badge: '🏫 Admissions Open 2025',
+    title: 'Building Tomorrow\'s <span>Leaders</span> Today',
+    sub: 'A modern school with experienced faculty, smart classrooms, and a holistic curriculum focused on academic excellence and character development.',
+    btn1: '📋 Apply Now', btn2: 'Virtual Tour',
+    stats: [['2500+','Students'],['120+','Faculty'],['25+','Yrs of Excellence']],
+    icon: '🏫', bizName: 'BrightMinds Public School',
+    address: '📍 Patia, Bhubaneswar • Nursery to Class XII',
+    tags: ['CBSE Curriculum','Smart Classes','Sports'],
+    fb1: '📋 Admissions Open', fb2: '🏆 Best School Award',
+    svcTag: 'Academics', svcTitle: 'What We Offer', svcSub: 'A complete education — from academics to co-curricular activities.',
+    services: [
+      {icon:'📚',name:'CBSE Curriculum',desc:'Comprehensive syllabus from Nursery to Class XII with expert teachers.',price:'Enquire'},
+      {icon:'🖥️',name:'Smart Classrooms',desc:'Digital boards, projectors, and interactive learning tools.',price:'Included'},
+      {icon:'⚽',name:'Sports & Athletics',desc:'Football, cricket, basketball, swimming and athletics coaching.',price:'Included'},
+      {icon:'🎨',name:'Arts & Crafts',desc:'Drawing, painting, music, dance — for all-round development.',price:'Included'},
+      {icon:'💻',name:'Computer Lab',desc:'Modern lab with latest computers and coding curriculum.',price:'Included'},
+      {icon:'🚌',name:'Transport Facility',desc:'Safe, GPS-tracked buses covering major city areas.',price:'₹1500/mo'},
+    ],
+    gallery: ['🏫','📚','⚽','🎨','💻','🚌'],
+    galBig: 0,
+    galCaptions: ['Our Campus','Library','Sports Ground','Arts Room','Computer Lab','School Bus'],
+    testimonials: [
+      {text:'My daughter joined Class 1 and has grown so much! The teachers are caring, skilled, and always available.', name:'Rekha Sahu', avatar:'👩', stars:'⭐⭐⭐⭐⭐'},
+      {text:'Best CBSE school in Bhubaneswar. The sports facilities and extracurricular activities are exceptional.', name:'Manoj Nayak', avatar:'👨', stars:'⭐⭐⭐⭐⭐'},
+      {text:'My son got 97% in Class X boards! The teachers give personal attention to every student. Proud parent!', name:'Sarita Behera', avatar:'👩‍🦳', stars:'⭐⭐⭐⭐⭐'},
+    ],
+    contactTitle: 'Apply for Admissions 2025–26',
+    contactSub: 'Limited seats available. Apply now and secure your child\'s future.',
+    contactInfo: [
+      {icon:'📞',label:'Admission Helpline',val:'+91 95432 10987'},
+      {icon:'📍',label:'Address',val:'School Road, Patia, Bhubaneswar'},
+      {icon:'🕐',label:'Office Hours',val:'Mon–Sat: 9:00 AM – 4:00 PM'},
+      {icon:'📧',label:'Email',val:'admissions@brightminds.edu'},
+    ],
+    formLabel3: 'Class Interested In / Query',
+    formSubmit: '📋 Apply for Admission',
+    footerName: 'BrightMinds Public School',
+  },
+
+  tuition: {
+    accent: '#dc2626', primary: '#1c1917', bg: '#fff7f7',
+    navLogo: 'Smart<span>Study</span>',
+    badge: '📚 Batch Starting Soon',
+    title: 'Score Higher with <span>Expert</span> Coaching',
+    sub: 'From Class 6 to competitive exams — our experienced tutors help every student reach their full potential with personalized attention.',
+    btn1: '📞 Free Demo Class', btn2: 'See Batches',
+    stats: [['800+','Students'],['98%','Pass Rate'],['12+','Yrs Coaching']],
+    icon: '📚', bizName: 'SmartStudy Classes',
+    address: '📍 Nayapalli, Bhubaneswar • Class 6 to XII + JEE/NEET',
+    tags: ['Maths','Science','English'],
+    fb1: '🆓 Free Demo Class', fb2: '🏆 98% Results',
+    svcTag: 'Courses', svcTitle: 'Our Coaching Programs', svcSub: 'Expert coaching for school students and competitive exam aspirants.',
+    services: [
+      {icon:'📐',name:'Maths (Class 6–12)',desc:'Board-focused and competitive math with shortcuts and tricks.',price:'₹1200/mo'},
+      {icon:'🔬',name:'Science (PCB/PCM)',desc:'Physics, Chemistry, Biology with practical understanding.',price:'₹1500/mo'},
+      {icon:'📖',name:'English Grammar',desc:'Spoken English, writing skills, and grammar for all boards.',price:'₹800/mo'},
+      {icon:'⚗️',name:'JEE Preparation',desc:'Intensive coaching for JEE Mains and Advanced.',price:'₹3500/mo'},
+      {icon:'🩺',name:'NEET Coaching',desc:'Biology, Physics, Chemistry batch for medical aspirants.',price:'₹3500/mo'},
+      {icon:'🎯',name:'Doubt Clearing',desc:'Extra sessions for weak students with individual attention.',price:'₹500/session'},
+    ],
+    gallery: ['📚','📐','🔬','✏️','🎯','👨‍🏫'],
+    galBig: 5,
+    galCaptions: ['Study Room','Maths Class','Science Lab','Practice Tests','Target Board','Expert Tutors'],
+    testimonials: [
+      {text:'My son scored 94% in boards after joining SmartStudy. The maths teacher is absolutely brilliant!', name:'Anita Das', avatar:'👩', stars:'⭐⭐⭐⭐⭐'},
+      {text:'Got into NIT after coaching here. The JEE material and mock tests are top quality. Worth every rupee!', name:'Abhishek Mishra', avatar:'👦', stars:'⭐⭐⭐⭐⭐'},
+      {text:'Small batch size means each student gets personal attention. My daughter improved by 30 marks!', name:'Pramod Sahoo', avatar:'👨', stars:'⭐⭐⭐⭐⭐'},
+    ],
+    contactTitle: 'Book a Free Demo Class Today',
+    contactSub: 'Come see how we teach — completely free, no obligation.',
+    contactInfo: [
+      {icon:'📞',label:'Phone',val:'+91 94321 09876'},
+      {icon:'📍',label:'Address',val:'Near Nayapalli Park, Bhubaneswar'},
+      {icon:'🕐',label:'Batch Timings',val:'Morning: 6AM–9AM | Evening: 4PM–8PM'},
+      {icon:'📧',label:'Email',val:'smartstudy@gmail.com'},
+    ],
+    formLabel3: 'Subject / Class / Query',
+    formSubmit: '📚 Book Free Demo',
+    footerName: 'SmartStudy Classes',
+  },
+
+  salon: {
+    accent: '#ec4899', primary: '#1f1235', bg: '#fdf2f8',
+    navLogo: 'Glow<span>Up</span>',
+    badge: '✨ Premium Salon Services',
+    title: 'Look Good. <span>Feel</span> Amazing.',
+    sub: 'Top stylists, premium products, and a relaxing atmosphere. From haircuts to full makeovers — your transformation starts here.',
+    btn1: '📅 Book Appointment', btn2: 'View Services',
+    stats: [['3000+','Happy Clients'],['20+','Expert Stylists'],['8+','Yrs of Style']],
+    icon: '✂️', bizName: 'GlowUp Beauty Salon',
+    address: '📍 Jaydev Vihar, Bhubaneswar • Open 9AM–9PM',
+    tags: ['Hair','Skin','Bridal'],
+    fb1: '💇 Free Consultation', fb2: '💅 Bridal Packages',
+    svcTag: 'Services', svcTitle: 'Our Salon Services', svcSub: 'Professional beauty services for hair, skin, nails and complete makeovers.',
+    services: [
+      {icon:'💇',name:'Hair Cut & Style',desc:'Expert cuts, blowdry, and styling for men, women and kids.',price:'₹299+'},
+      {icon:'🎨',name:'Hair Coloring',desc:'Global color, highlights, balayage, and ombre with premium dyes.',price:'₹1499+'},
+      {icon:'💆',name:'Facial & Cleanup',desc:'Deep cleansing facial, skin brightening, and anti-aging treatments.',price:'₹599+'},
+      {icon:'💅',name:'Manicure / Pedicure',desc:'Nail care, gel nails, nail art — complete hand and foot care.',price:'₹499+'},
+      {icon:'👰',name:'Bridal Package',desc:'Full bridal makeover — hair, makeup, mehendi and more.',price:'₹8999+'},
+      {icon:'🧖',name:'Spa & Massage',desc:'Head massage, body spa, and aromatherapy sessions.',price:'₹799+'},
+    ],
+    gallery: ['✂️','🎨','💆','💅','👰','🧖'],
+    galBig: 4,
+    galCaptions: ['Hair Studio','Color Section','Facial Room','Nail Art','Bridal Room','Spa Zone'],
+    testimonials: [
+      {text:'Got my bridal makeup done here and I looked absolutely stunning! Highly recommend GlowUp for brides.', name:'Divya Sharma', avatar:'👰', stars:'⭐⭐⭐⭐⭐'},
+      {text:'Best balayage in the city! The colorist really understood what I wanted. Very happy with the result!', name:'Ritu Jain', avatar:'👩', stars:'⭐⭐⭐⭐⭐'},
+      {text:'The spa package was so relaxing. Clean place, professional staff, and reasonable prices. 5 stars!', name:'Poonam Verma', avatar:'👩‍🦱', stars:'⭐⭐⭐⭐⭐'},
+    ],
+    contactTitle: 'Book Your Appointment',
+    contactSub: 'Walk-in welcome or book ahead for priority service!',
+    contactInfo: [
+      {icon:'📞',label:'Phone',val:'+91 93210 98765'},
+      {icon:'📍',label:'Address',val:'Plot 12, Jaydev Vihar, Bhubaneswar'},
+      {icon:'🕐',label:'Hours',val:'Mon–Sun: 9:00 AM – 9:00 PM'},
+      {icon:'📧',label:'Email',val:'glowup@gmail.com'},
+    ],
+    formLabel3: 'Service Required',
+    formSubmit: '💇 Book Appointment',
+    footerName: 'GlowUp Beauty Salon',
+  },
+
+  hotel: {
+    accent: '#b45309', primary: '#1c1009', bg: '#fffbf0',
+    navLogo: 'Grand<span>Stay</span>',
+    badge: '🏨 Best Price Guaranteed',
+    title: 'Your Perfect <span>Stay</span> Awaits',
+    sub: 'Luxurious rooms, world-class amenities, and hospitality that feels like home. Business or leisure — we have the perfect room for you.',
+    btn1: '🛎️ Book Room', btn2: 'View Rooms',
+    stats: [['80+','Rooms'],['4.8★','Rating'],['20+','Yrs of Hospitality']],
+    icon: '🏨', bizName: 'GrandStay Hotel',
+    address: '📍 Janpath, Bhubaneswar • Check-in 24/7',
+    tags: ['Deluxe Rooms','Restaurant','Conference Hall'],
+    fb1: '🎁 10% Off Online', fb2: '✅ Free Breakfast',
+    svcTag: 'Rooms & Suites', svcTitle: 'Stay in Comfort', svcSub: 'From budget rooms to luxury suites — choose what fits you best.',
+    services: [
+      {icon:'🛏️',name:'Standard Room',desc:'Comfortable room with AC, TV, WiFi, and attached bathroom.',price:'₹1999/night'},
+      {icon:'🛎️',name:'Deluxe Room',desc:'Spacious room with city view, premium bedding and mini-bar.',price:'₹3499/night'},
+      {icon:'👑',name:'Suite',desc:'Luxury suite with living area, king bed, and jacuzzi.',price:'₹6999/night'},
+      {icon:'🍳',name:'Restaurant',desc:'Multi-cuisine restaurant open for breakfast, lunch, and dinner.',price:'À la carte'},
+      {icon:'🏊',name:'Swimming Pool',desc:'Outdoor pool with poolside service and sun loungers.',price:'Included'},
+      {icon:'📋',name:'Conference Hall',desc:'Fully equipped conference room for meetings and events.',price:'₹5000/day'},
+    ],
+    gallery: ['🏨','🛏️','🍳','🏊','👑','🌅'],
+    galBig: 2,
+    galCaptions: ['Our Hotel','Deluxe Room','Restaurant','Swimming Pool','Suite','City View'],
+    testimonials: [
+      {text:'Stayed for a business trip — the room was spotless, breakfast was amazing, and staff were super helpful!', name:'Rajesh Gupta', avatar:'👨', stars:'⭐⭐⭐⭐⭐'},
+      {text:'Beautiful hotel with great views. The pool area is lovely. Will definitely come back for our next visit!', name:'Kavita Menon', avatar:'👩', stars:'⭐⭐⭐⭐⭐'},
+      {text:'Perfect for family stay. Kids loved the pool and the restaurant has great food. Excellent value!', name:'Sunil Rathore', avatar:'👨‍👩‍👧', stars:'⭐⭐⭐⭐⭐'},
+    ],
+    contactTitle: 'Book Your Room Now',
+    contactSub: 'Best price guaranteed when you book directly with us!',
+    contactInfo: [
+      {icon:'📞',label:'Reservations',val:'+91 92109 87654'},
+      {icon:'📍',label:'Address',val:'Janpath Road, Bhubaneswar, Odisha'},
+      {icon:'🕐',label:'Check-in / Check-out',val:'Check-in: 12PM | Check-out: 11AM'},
+      {icon:'📧',label:'Email',val:'reservations@grandstay.com'},
+    ],
+    formLabel3: 'Check-in Date / Room Type',
+    formSubmit: '🛎️ Book Now',
+    footerName: 'GrandStay Hotel',
+  },
+
+  cafe: {
+    accent: '#92400e', primary: '#1c0f06', bg: '#fef9f0',
+    navLogo: 'Bean<span>Scene</span>',
+    badge: '☕ Freshly Brewed Daily',
+    title: 'Where Every Cup <span>Tells</span> a Story',
+    sub: 'Specialty coffees, artisan pastries, and a cozy atmosphere. Your neighborhood café for work, dates, or just some quiet time.',
+    btn1: '📍 Visit Us', btn2: 'See Menu',
+    stats: [['300+','Cups/Day'],['20+','Coffee Varieties'],['6+','Yrs Brewing']],
+    icon: '☕', bizName: 'BeanScene Café',
+    address: '📍 Saheed Nagar, Bhubaneswar • Open 8AM–10PM',
+    tags: ['Specialty Coffee','Pastries','WiFi Café'],
+    fb1: '☕ Buy 2 Get 1 Free', fb2: '📶 Free WiFi',
+    svcTag: 'Our Menu', svcTitle: 'Coffee & More', svcSub: 'From classic espresso to seasonal specials — every sip is crafted with love.',
+    services: [
+      {icon:'☕',name:'Espresso & Cappuccino',desc:'Classic Italian espresso-based drinks with rich crema.',price:'₹120+'},
+      {icon:'🧊',name:'Cold Brews & Frappes',desc:'Refreshing iced coffee drinks for hot days.',price:'₹160+'},
+      {icon:'🍰',name:'Cakes & Pastries',desc:'Freshly baked cakes, croissants, and muffins daily.',price:'₹80+'},
+      {icon:'🥪',name:'Sandwiches & Wraps',desc:'Grilled sandwiches and fresh wraps for a quick bite.',price:'₹150+'},
+      {icon:'🍵',name:'Teas & Herbal Drinks',desc:'Masala chai, green teas, and herbal wellness drinks.',price:'₹90+'},
+      {icon:'🎂',name:'Birthday Cakes',desc:'Custom order cakes for all occasions with 24hr notice.',price:'₹799+'},
+    ],
+    gallery: ['☕','🍰','🧊','🥪','📚','🌿'],
+    galBig: 0,
+    galCaptions: ['Our Coffee','Fresh Pastries','Cold Brews','Café Bites','Study Corner','Indoor Plants'],
+    testimonials: [
+      {text:'The best cold brew I\'ve ever had! Great ambiance for working and the pastries are absolutely divine.', name:'Neha Kulkarni', avatar:'👩', stars:'⭐⭐⭐⭐⭐'},
+      {text:'My daily morning stop. The baristas know exactly how I like my coffee. Feels like home here!', name:'Anil Rath', avatar:'👨', stars:'⭐⭐⭐⭐⭐'},
+      {text:'Perfect date spot. Beautiful décor, amazing coffee, and the cake was heavenly. Will come again!', name:'Shreya Das', avatar:'👧', stars:'⭐⭐⭐⭐⭐'},
+    ],
+    contactTitle: 'Come Hang Out With Us',
+    contactSub: 'We\'re open every day. Bring your laptop, bring a friend, or just bring yourself!',
+    contactInfo: [
+      {icon:'📞',label:'Phone',val:'+91 91098 76543'},
+      {icon:'📍',label:'Address',val:'17, Saheed Nagar Road, Bhubaneswar'},
+      {icon:'🕐',label:'Hours',val:'Mon–Sun: 8:00 AM – 10:00 PM'},
+      {icon:'📧',label:'Email',val:'hello@beanscene.in'},
+    ],
+    formLabel3: 'Pre-order / Special Request',
+    formSubmit: '☕ Send Message',
+    footerName: 'BeanScene Café',
+  },
+
+  dental: {
+    accent: '#0284c7', primary: '#082f49', bg: '#f0f9ff',
+    navLogo: 'Smile<span>Care</span>',
+    badge: '🦷 Trusted Dental Clinic',
+    title: 'Your <span>Smile</span> is Our Specialty',
+    sub: 'Advanced dental treatments in a comfortable, anxiety-free environment. From routine cleaning to complete smile makeovers.',
+    btn1: '📅 Book Appointment', btn2: 'Our Treatments',
+    stats: [['5000+','Patients'],['15+','Yrs of Care'],['10+','Specialists']],
+    icon: '🦷', bizName: 'SmileCare Dental Clinic',
+    address: '📍 IRC Village, Bhubaneswar • Mon–Sat 9AM–7PM',
+    tags: ['Painless Treatment','Cosmetic Dentistry','Braces'],
+    fb1: '🆓 Free Checkup', fb2: '😁 Painless Treatment',
+    svcTag: 'Treatments', svcTitle: 'Our Dental Services', svcSub: 'Complete dental care using the latest technology for painless, effective treatment.',
+    services: [
+      {icon:'🦷',name:'Teeth Cleaning',desc:'Professional scaling and polishing to remove plaque and tartar.',price:'₹499'},
+      {icon:'😁',name:'Teeth Whitening',desc:'In-clinic laser whitening for a brighter, confident smile.',price:'₹3999'},
+      {icon:'🔧',name:'Root Canal',desc:'Painless RCT using advanced rotary instruments.',price:'₹2999+'},
+      {icon:'🦴',name:'Dental Implants',desc:'Permanent tooth replacement that looks and feels natural.',price:'₹25000+'},
+      {icon:'📐',name:'Braces / Aligners',desc:'Metal braces, ceramic braces, and clear aligners for all ages.',price:'₹15000+'},
+      {icon:'👑',name:'Crowns & Veneers',desc:'Tooth caps and porcelain veneers for damaged or stained teeth.',price:'₹4999+'},
+    ],
+    gallery: ['🦷','😁','🔬','💉','📐','🏥'],
+    galBig: 1,
+    galCaptions: ['Treatment Room','Happy Smiles','Digital X-ray','Painless Care','Braces','Our Clinic'],
+    testimonials: [
+      {text:'Had my root canal done here and it was completely painless! The doctor was very skilled and gentle.', name:'Girish Rao', avatar:'👨', stars:'⭐⭐⭐⭐⭐'},
+      {text:'Teeth whitening results were amazing. Got 5 shades whiter in one session. Highly recommended!', name:'Pooja Mishra', avatar:'👩', stars:'⭐⭐⭐⭐⭐'},
+      {text:'My 8-year-old was terrified of dentists. But the team here made her completely comfortable. Great care!', name:'Namita Singh', avatar:'👩‍👧', stars:'⭐⭐⭐⭐⭐'},
+    ],
+    contactTitle: 'Book a Free Dental Checkup',
+    contactSub: 'First consultation is completely free. Get a smile assessment today!',
+    contactInfo: [
+      {icon:'📞',label:'Appointment',val:'+91 90987 65432'},
+      {icon:'📍',label:'Address',val:'Plot 22, IRC Village, Bhubaneswar'},
+      {icon:'🕐',label:'Clinic Hours',val:'Mon–Sat: 9AM–7PM | Sun: 10AM–2PM'},
+      {icon:'📧',label:'Email',val:'smilecare@gmail.com'},
+    ],
+    formLabel3: 'Treatment Required / Query',
+    formSubmit: '🦷 Book Free Checkup',
+    footerName: 'SmileCare Dental Clinic',
+  }
+};
+
+function switchCategory(key) {
+  const d = categories[key];
+  document.documentElement.style.setProperty('--accent', d.accent);
+  document.documentElement.style.setProperty('--primary', d.primary);
+  document.documentElement.style.setProperty('--bg', d.bg);
+
+  // Update all text
+  document.getElementById('nav-logo').innerHTML = d.navLogo;
+  document.getElementById('hero-badge').innerHTML = '⭐ ' + d.badge.replace(/^[^\s]+\s/,'');
+  document.getElementById('hero-title').innerHTML = d.title;
+  document.getElementById('hero-sub').textContent = d.sub;
+  document.getElementById('btn-primary').textContent = d.btn1;
+  document.getElementById('btn-secondary').textContent = d.btn2;
+  document.getElementById('stat1-num').textContent = d.stats[0][0];
+  document.getElementById('stat1-label').textContent = d.stats[0][1];
+  document.getElementById('stat2-num').textContent = d.stats[1][0];
+  document.getElementById('stat2-label').textContent = d.stats[1][1];
+  document.getElementById('stat3-num').textContent = d.stats[2][0];
+  document.getElementById('stat3-label').textContent = d.stats[2][1];
+  document.getElementById('visual-icon').textContent = d.icon;
+  document.getElementById('visual-biz-name').textContent = d.bizName;
+  document.getElementById('visual-address').textContent = d.address;
+  document.getElementById('fb1').textContent = d.fb1;
+  document.getElementById('fb2').textContent = d.fb2;
+  document.getElementById('svc-tag').textContent = d.svcTag;
+  document.getElementById('svc-title').textContent = d.svcTitle;
+  document.getElementById('svc-sub').textContent = d.svcSub;
+  document.getElementById('contact-title').textContent = d.contactTitle;
+  document.getElementById('contact-sub').textContent = d.contactSub;
+  document.getElementById('form-label3').textContent = d.formLabel3;
+  document.getElementById('form-submit').textContent = d.formSubmit;
+  document.getElementById('footer-name').textContent = d.footerName;
+  document.getElementById('gal-title').textContent = 'A Glimpse of ' + d.bizName;
+
+  // Tags
+  document.getElementById('visual-tags').innerHTML = d.tags.map(t => `<span class="vtag">${t}</span>`).join('');
+
+  // Services
+  document.getElementById('services-grid').innerHTML = d.services.map(s => `
+    <div class="service-card fade-in visible">
+      <span class="svc-icon">${s.icon}</span>
+      <div class="svc-name">${s.name}</div>
+      <div class="svc-desc">${s.desc}</div>
+      <span class="svc-price">${s.price}</span>
+    </div>`).join('');
+
+  // Gallery
+  document.getElementById('gallery-grid').innerHTML = d.gallery.map((g,i) => `
+    <div class="gallery-item${i === d.galBig ? ' big' : ''} fade-in visible">
+      ${g}
+      <span class="gallery-caption">${d.galCaptions[i]}</span>
+    </div>`).join('');
+
+  // Testimonials
+  document.getElementById('testi-grid').innerHTML = d.testimonials.map(t => `
+    <div class="testi-card fade-in visible">
+      <div class="testi-quote">"</div>
+      <p class="testi-text">${t.text}</p>
+      <div class="testi-author">
+        <div class="testi-avatar">${t.avatar}</div>
+        <div>
+          <div class="testi-name">${t.name}</div>
+          <div class="testi-stars">${t.stars}</div>
+        </div>
+      </div>
+    </div>`).join('');
+
+  // Contact Info
+  document.getElementById('contact-info').innerHTML = d.contactInfo.map(c => `
+    <div class="contact-item">
+      <span class="contact-item-icon">${c.icon}</span>
+      <div>
+        <div class="contact-item-label">${c.label}</div>
+        <div class="contact-item-val">${c.val}</div>
+      </div>
+    </div>`).join('');
+
+  // Active btn
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+
+  // Trigger hero animation restart
+  const hero = document.querySelector('.hero');
+  hero.style.opacity = '0';
+  setTimeout(() => {
+    hero.style.transition = 'opacity 0.4s';
+    hero.style.opacity = '1';
+    ['hero-badge','hero-title','hero-sub','hero-btns','hero-stats','hero-visual'].forEach((id,i) => {
+      const el = document.getElementById(id) || document.querySelector('.'+id);
+      if (el) {
+        el.style.animation = 'none';
+        el.offsetHeight;
+        el.style.animation = '';
+      }
+    });
+  }, 100);
+
+  // Scroll to top smoothly
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Initial load
+switchCategory('restaurant');
+
+// Intersection observer for scroll animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Re-init observer after category switch (for dynamically added cards)
+const mutationObserver = new MutationObserver(() => {
+  document.querySelectorAll('.fade-in:not([data-observed])').forEach(el => {
+    el.setAttribute('data-observed','1');
+    observer.observe(el);
+  });
+});
+mutationObserver.observe(document.body, { childList: true, subtree: true });
+</script>
+</body>
+</html>
